@@ -1,0 +1,14 @@
+{
+    "videoIDs": ["3120"],
+    "dataTypes": {
+        "3120": ["bodysync", "neuralsync", "neuralsync2", "neuralsync3"]
+    },
+    "include_RQA": ["bodysync", "neuralsync", "neuralsync2", "neuralsync3"],
+    "include_crosswavelet": ["bodysync", "neuralsync"],
+    "include_elan": true,
+    "defaultWindowSize": 5,
+    "title": "DIMS Dashboard",
+    "subtitle": "Multimodal Synchrony Exploration Visualization",
+    "authors": "Your team's Name",
+    "contacts": "contacts: Your team's contacts"
+}

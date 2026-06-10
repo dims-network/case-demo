@@ -1,0 +1,13 @@
+assets/timeseries/
+assets/videos/
+assets/rqa/
+assets/crosswavelet/
+*.mp4
+*.db
+*.csv
+.claude/
+CLAUDE.md
+__pycache__/
+*.pyc
+.DS_Store
+node_modules/

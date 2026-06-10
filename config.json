@@ -8,7 +8,7 @@
     "include_elan": true,
     "defaultWindowSize": 5,
     "title": "DIMS Dashboard",
-    "subtitle": "Multimodal Synchrony Exploration Visualization",
-    "authors": "Your team's Name",
-    "contacts": "contacts: Your team's contacts"
+    "subtitle": "Dynamic Interaction and Multimodal Signals",
+    "authors": "Grace Qiyuan Miao, Wim Pouw, Michal Weiss",
+    "contacts": "contacts: q.miao@ucla.edu & w.pouw@tilburguniversity.edu & michal.weiss@psych.uw.edu.pl"
 }

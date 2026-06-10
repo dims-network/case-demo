@@ -4,8 +4,6 @@
 
 An open tool for visualizing multimodal social interaction data — time series, video, transcripts, and optional analyses (RQA, cross-wavelet, ELAN annotations).
 
-GitHub: https://github.com/mikub97/DIMS_dashboard
-
 ## File Structure
 
 ```

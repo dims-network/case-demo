@@ -94,12 +94,19 @@ This will create 4 separate subplots:
 - `neuralsync2_synchrony_measure`
 - `neuralsync3_synchrony_measure`
 
+## Local Development
+
+Use the included server (plain `python -m http.server` does not support HTTP Range requests, which breaks video seeking):
+
+```bash
+python serve.py        # default port 8000
+python serve.py 3000   # custom port
+```
+
 ## Deployment
 
-Deploy to any static hosting service:
+Deploy to any static hosting service — all of these support HTTP Range requests for video seeking:
 - **GitHub Pages**
-- **Netlify** 
+- **Netlify**
 - **Vercel**
-- **Any web server**
-
-The video segmenting should now work reliably with the enhanced React component and simplified data structure!
+- **Any standard web server**

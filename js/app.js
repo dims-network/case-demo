@@ -450,8 +450,10 @@ class DIMSApp {
                 title: 'Power',
                 titleside: 'right',
                 x: 0.72,
-                len: 0.32,
-                y: 0.48
+                y: 0.55,
+                yanchor: 'middle',
+                len: 0.34,
+                lenmode: 'fraction'
             },
             xaxis: 'x',
             yaxis: 'y',
@@ -1606,107 +1608,41 @@ if (arrowData.x.length > 0) {
         const videoSrc = `assets/videos/${this.currentVideoID}.mp4`;
         const startTime = Math.max(0, clickTime - windowSize / 2);
         const endTime = clickTime + windowSize / 2;
-        
-        console.log('=== VIDEO UPDATE DEBUG ===');
-        console.log('Video source:', videoSrc);
-        console.log('Click time:', clickTime);
-        console.log('Window size:', windowSize);
-        console.log('Start time:', startTime);
-        console.log('End time:', endTime);
-        
-        // Full video - different approach
+
         const fullVideoContainer = document.getElementById('fullVideoContainer');
         if (fullVideoContainer) {
-            console.log('Rendering full video component...');
             try {
-                // For full video, we'll create a simpler video element if the component has issues
-                if (this.config.useSimpleVideoForFull) {
-                    // Fallback: Create a simple video element
-                    fullVideoContainer.innerHTML = `
-                        <h3 style="color: white;">Full Video</h3>
-                        <video src="${videoSrc}" controls style="width: 100%;" preload="metadata"></video>
-                    `;
-                    console.log('Full video rendered with simple HTML video element');
-                } else {
-                    // Use the React component but without startTime
-                    ReactDOM.render(
-                        React.createElement(window.TimeRangeVideo, {
-                            src: videoSrc,
-                            title: 'Full Video'
-                        }),
-                        fullVideoContainer
-                    );
-                    console.log('Full video component rendered successfully');
-                }
-            } catch (error) {
-                console.error('Error rendering full video:', error);
-                // Fallback to simple video element
+                ReactDOM.render(
+                    React.createElement(window.TimeRangeVideo, {
+                        src: videoSrc,
+                        title: 'Full Video'
+                    }),
+                    fullVideoContainer
+                );
+            } catch (e) {
                 fullVideoContainer.innerHTML = `
-                    <h3 style="color: white;">Full Video</h3>
-                    <video src="${videoSrc}" controls style="width: 100%;" preload="metadata"></video>
+                    <h3 style="color:white;">Full Video</h3>
+                    <video src="${videoSrc}" controls style="width:100%;" preload="metadata"></video>
                 `;
             }
-        } else {
-            console.error('fullVideoContainer element not found!');
         }
-        
-        // Segment video - keep as is since it works
+
         const segmentVideoContainer = document.getElementById('segmentVideoContainer');
         if (segmentVideoContainer) {
-            console.log('Rendering segment video component...');
             try {
                 ReactDOM.render(
                     React.createElement(window.TimeRangeVideo, {
                         src: videoSrc,
                         startTime: startTime,
                         endTime: endTime,
-                        title: `Selected Segment (${startTime.toFixed(1)}s - ${endTime.toFixed(1)}s)`
+                        title: `Segment (${startTime.toFixed(1)}s – ${endTime.toFixed(1)}s)`
                     }),
                     segmentVideoContainer
                 );
-                console.log('Segment video component rendered successfully');
-            } catch (error) {
-                console.error('Error rendering segment video:', error);
+            } catch (e) {
+                console.error('Error rendering segment video:', e);
             }
-        } else {
-            console.error('segmentVideoContainer element not found!');
         }
-        
-        // Debug: Check what's actually rendered
-        setTimeout(() => {
-            console.log('=== POST-RENDER CHECK ===');
-            const fullVideo = fullVideoContainer?.querySelector('video');
-            const segmentVideo = segmentVideoContainer?.querySelector('video');
-            
-            if (fullVideo) {
-                console.log('Full video element found:', {
-                    src: fullVideo.src,
-                    currentTime: fullVideo.currentTime,
-                    paused: fullVideo.paused,
-                    readyState: fullVideo.readyState
-                });
-                
-                // Add event listeners to debug
-                fullVideo.addEventListener('loadedmetadata', () => {
-                    console.log('Full video metadata loaded');
-                }, { once: true });
-                
-                fullVideo.addEventListener('error', (e) => {
-                    console.error('Full video error:', e);
-                }, { once: true });
-            } else {
-                console.log('No full video element found');
-            }
-            
-            if (segmentVideo) {
-                console.log('Segment video element found:', {
-                    src: segmentVideo.src,
-                    currentTime: segmentVideo.currentTime,
-                    paused: segmentVideo.paused,
-                    readyState: segmentVideo.readyState
-                });
-            }
-        }, 500);
     }
 
     updateTranscript(clickTime, windowSize) {

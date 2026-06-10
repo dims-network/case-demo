@@ -188,6 +188,9 @@ class DIMSApp {
 
         if (tabName === 'timeseries') {
             document.getElementById('plotContainer').style.display = 'block';
+            if (this.lastClickedPoint !== null) {
+                this.handleTimeClick(this.lastClickedPoint);
+            }
         } else if (tabName === 'rqa') {
             const rqaContainer = document.getElementById('rqaContainer');
             if (rqaContainer) rqaContainer.style.display = 'block';
@@ -1922,7 +1925,12 @@ if (arrowData.x.length > 0) {
         const layout = {
             paper_bgcolor: '#111', plot_bgcolor: '#1a1a1a', font: { color: 'white' },
             margin: { t: 20, r: 20, b: 50, l: leftMargin },
-            xaxis: { title: 'Time (s)', color: 'white', gridcolor: '#333', zeroline: false },
+            xaxis: {
+                title: 'Time (s)', color: 'white', gridcolor: '#333', zeroline: false,
+                range: this.mergedData
+                    ? [0, Math.max(...this.mergedData.map(d => d.Time))]
+                    : undefined
+            },
             yaxis: {
                 tickvals: tiers.map((_, i) => i + 0.5),
                 ticktext: tiers.map(t => t.tierID),

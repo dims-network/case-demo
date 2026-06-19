@@ -5,6 +5,7 @@
     },
     "include_RQA": ["bodysync", "neuralsync", "neuralsync2", "neuralsync3"],
     "include_crosswavelet": ["bodysync", "neuralsync"],
+    "include_cRQA": [["bodysync", "neuralsync"]],
     "include_elan": true,
     "defaultWindowSize": 5,
     "title": "DIMS Dashboard",

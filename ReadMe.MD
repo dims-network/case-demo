@@ -46,6 +46,12 @@ Install Python dependencies once: `pip install -r opt/requirements.txt`
 1. Add `"include_crosswavelet": ["dataType1", "dataType2"]` to `config.json`
 2. Run `python opt/step_crosswavelet.py --config config.json --output-dir assets/crosswavelet`
 
+### Cross-RQA (Cross-Recurrence Quantification Analysis)
+1. Add `"include_cRQA": [["dataType1", "dataType2"], ...]` to `config.json` (a list of pairs)
+2. Run `python opt/step_cRQA.py --config config.json --output-dir assets/crqa`
+   - Renders the full cross-recurrence plot between the two series plus windowed RR/DET/LAM/L_MAX
+     metrics (sliding window along the line of synchronization). Tune with `--window`/`--step` (seconds).
+
 ### ELAN Annotations
 1. Add `"include_elan": true` to `config.json`
 2. Place `.eaf` files in `assets/elan/{videoID}.eaf`

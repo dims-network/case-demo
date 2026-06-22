@@ -1091,12 +1091,13 @@ if (arrowData.x.length > 0) {
             throw new Error('Plotly library not loaded.');
         }
         const vis = pairData.visualization;
-        if (!vis || !vis.time || !vis.matrix_size || !vis.sparse_matrix) {
+        if (!vis || !vis.time || !vis.matrix_size || !vis.sparse_matrix
+            || !vis.data_x || !vis.data_y) {
             throw new Error('Missing required cRQA visualization fields');
         }
         const names = pairData.series_names || ['series 1', 'series 2'];
 
-        // Sort the common time axis (it is uniform, but keep parity with RQA logic).
+        // Common (uniform) time axis shared by both series.
         const time = vis.time;
 
         // Build a dense matrix from the (complete) sparse recurrence plot.
@@ -1108,51 +1109,109 @@ if (arrowData.x.length > 0) {
             }
         });
 
-        const traces = [{
-            x: time,
-            y: time,
-            z: matrix,
-            type: 'heatmap',
-            colorscale: [[0, 'white'], [1, 'black']],
-            showscale: false,
-            hovertemplate: `${names[0]} time: %{x:.1f}s<br>${names[1]} time: %{y:.1f}s<extra></extra>`
-        }];
+        // One color per series, matched to the main timeseries colors where possible
+        // (same HSL scheme as plotTimeseries / createRQAPlot), with sane fallbacks.
+        const colorFor = (name) => {
+            if (this.currentData) {
+                const i = this.currentData.findIndex(d => d.name === name);
+                if (i !== -1) return `hsl(${i * 360 / this.currentData.length}, 70%, 50%)`;
+            }
+            return null;
+        };
+        const colorX = colorFor(names[0]) || '#e15759';
+        const colorY = colorFor(names[1]) || '#4e79a7';
+
+        // Three subplots, mirroring createRQAPlot: the cross-recurrence matrix with
+        // series 1 as a horizontal marginal along the top and series 2 as a rotated
+        // vertical marginal down the left.
+        const traces = [
+            // Main cross-recurrence heatmap
+            {
+                x: time,
+                y: time,
+                z: matrix,
+                type: 'heatmap',
+                colorscale: [[0, 'white'], [1, 'black']],
+                showscale: false,
+                xaxis: 'x',
+                yaxis: 'y',
+                hovertemplate: `${names[0]} time: %{x:.1f}s<br>${names[1]} time: %{y:.1f}s<extra></extra>`
+            },
+            // Top marginal: series 1 (x-axis signal)
+            {
+                x: time,
+                y: vis.data_x,
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: colorX, width: 2 },
+                xaxis: 'x2',
+                yaxis: 'y2',
+                hovertemplate: `Time: %{x:.1f}s<br>${names[0]}: %{y:.2f}<extra></extra>`
+            },
+            // Left marginal: series 2 (y-axis signal, rotated)
+            {
+                x: vis.data_y,
+                y: time,
+                type: 'scatter',
+                mode: 'lines',
+                line: { color: colorY, width: 2 },
+                xaxis: 'x3',
+                yaxis: 'y3',
+                hovertemplate: `${names[1]}: %{x:.2f}<br>Time: %{y:.1f}s<extra></extra>`
+            }
+        ];
 
         const layout = {
-            title: { text: 'Cross-Recurrence Plot', font: { color: 'white', size: 16 } },
+            title: {
+                text: `Cross-Recurrence Plot<br><sub>${names[0]} ↔ ${names[1]} — Global RR: ${(pairData.global_recurrence_rate * 100).toFixed(2)}%, Threshold: ${pairData.threshold.toFixed(4)}</sub>`,
+                font: { color: 'white', size: 16 }
+            },
             paper_bgcolor: '#222',
             plot_bgcolor: '#333',
             font: { color: 'white' },
-            xaxis: { title: `${names[0]} time (s)`, gridcolor: '#444', constrain: 'domain' },
-            yaxis: { title: `${names[1]} time (s)`, gridcolor: '#444', scaleanchor: 'x', scaleratio: 1 },
-            margin: { t: 50, r: 30, b: 60, l: 70 },
+            grid: {
+                rows: 2,
+                columns: 2,
+                pattern: 'independent',
+                roworder: 'bottom to top'
+            },
+            xaxis: { domain: [0.15, 0.95], anchor: 'y', title: `${names[0]} time (s)`, gridcolor: '#444' },
+            yaxis: { domain: [0, 0.8], anchor: 'x', title: `${names[1]} time (s)`, gridcolor: '#444' },
+            xaxis2: { domain: [0.15, 0.95], anchor: 'y2', title: '', showticklabels: false, gridcolor: '#444' },
+            yaxis2: { domain: [0.85, 1], anchor: 'x2', title: names[0], gridcolor: '#444' },
+            xaxis3: { domain: [0, 0.1], anchor: 'y3', title: names[1], gridcolor: '#444', autorange: 'reversed' },
+            yaxis3: { domain: [0, 0.8], anchor: 'x3', title: '', showticklabels: false, gridcolor: '#444' },
+            margin: { t: 80, r: 50, b: 80, l: 80 },
             hovermode: 'closest'
         };
 
-        // Yellow window-slider highlight (both series share the common time grid,
-        // so the selected window is a band on each axis plus a box, as in RQA).
+        // Yellow window-slider highlight on the main subplot (both series share the
+        // common time grid, so the selected window is a band on each axis plus a box).
         if (this.lastClickedPoint !== null) {
             const windowSize = parseInt(document.getElementById('windowSize').value) || 5;
             const t0 = time[0], t1 = time[time.length - 1];
             const startTime = Math.max(t0, this.lastClickedPoint - windowSize / 2);
             const endTime = Math.min(t1, this.lastClickedPoint + windowSize / 2);
             layout.shapes = [
-                { type: 'line', x0: startTime, x1: startTime, y0: t0, y1: t1, line: { color: 'yellow', width: 2 } },
-                { type: 'line', x0: endTime, x1: endTime, y0: t0, y1: t1, line: { color: 'yellow', width: 2 } },
-                { type: 'line', x0: t0, x1: t1, y0: startTime, y1: startTime, line: { color: 'yellow', width: 2 } },
-                { type: 'line', x0: t0, x1: t1, y0: endTime, y1: endTime, line: { color: 'yellow', width: 2 } },
+                { type: 'line', x0: startTime, x1: startTime, y0: t0, y1: t1, line: { color: 'yellow', width: 2 }, xref: 'x', yref: 'y' },
+                { type: 'line', x0: endTime, x1: endTime, y0: t0, y1: t1, line: { color: 'yellow', width: 2 }, xref: 'x', yref: 'y' },
+                { type: 'line', x0: t0, x1: t1, y0: startTime, y1: startTime, line: { color: 'yellow', width: 2 }, xref: 'x', yref: 'y' },
+                { type: 'line', x0: t0, x1: t1, y0: endTime, y1: endTime, line: { color: 'yellow', width: 2 }, xref: 'x', yref: 'y' },
                 { type: 'rect', x0: startTime, x1: endTime, y0: startTime, y1: endTime,
-                  fillcolor: 'yellow', opacity: 0.1, line: { width: 0 } }
+                  fillcolor: 'yellow', opacity: 0.1, line: { width: 0 }, xref: 'x', yref: 'y' }
             ];
         }
 
         Plotly.newPlot(containerId, traces, layout, { responsive: true });
 
-        // Clicking the plot selects a time point (x = series-1 time) like the RQA tab.
+        // Clicking the main plot selects a time point (x = series-1 time) like the RQA tab.
         document.getElementById(containerId).on('plotly_click', (data) => {
             if (data.points && data.points.length > 0) {
-                this.handleTimeClick(data.points[0].x);
-                setTimeout(() => this.updateCRQAHighlights(), 100);
+                const point = data.points[0];
+                if (point.xaxis && point.xaxis._id === 'x' && point.yaxis._id === 'y') {
+                    this.handleTimeClick(point.x);
+                    setTimeout(() => this.updateCRQAHighlights(), 100);
+                }
             }
         });
     }

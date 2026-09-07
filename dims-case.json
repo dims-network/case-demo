@@ -1,7 +1,7 @@
 {
   "case": "demo",
   "visibility": "public",
-  "dimsCore": "1.1.0",
+  "dimsCore": "1.2.0",
   "publishable": [],
   "restricted": [
     "assets/videos",

@@ -1,3 +1,0 @@
-# Keep this repo's canonical config on merges from the upstream template.
-# Requires (once per clone): git config merge.ours.driver true
-config.json merge=ours

@@ -1,0 +1,55 @@
+{
+  "assetsExternal": false,
+  "checksums": true,
+  "files": {
+    "crosswavelet/3120_crosswavelet_data.json": {
+      "bytes": 494583,
+      "sha256": "bd24161584f25e570d427425bc35ed2b1ed76a41a2d792a1628b8e3e5e17bdee"
+    },
+    "crosswavelet/3120_crosswavelet_full.json": {
+      "bytes": 6285261,
+      "sha256": "4361c5284c865f834ec697fd3c5b54e25b3eacdaa51f7ff484a641631667b5c5"
+    },
+    "crqa/3120_crqa_data.json": {
+      "bytes": 142819,
+      "sha256": "30228a62dbc4a5342c342348617ef7365e50b88e0576466a770c14491d45c713"
+    },
+    "elan/3120.eaf": {
+      "bytes": 5617,
+      "sha256": "663f0226601e8f8449233a3c178ad0a600f577cc1d18ff65d5893e0d7a2e009a"
+    },
+    "rqa/3120_rqa_data.json": {
+      "bytes": 492497,
+      "sha256": "fb68047990e490df2a1bfe1e60937db238992be9cee42bf0ae60ad6fcb6938bd"
+    },
+    "timeseries/3120_bodysync.csv": {
+      "bytes": 52257,
+      "sha256": "315fbed849156af4391ddf47125d8073aea93265d781ebf4a1c2a13a59085a49"
+    },
+    "timeseries/3120_neuralsync.csv": {
+      "bytes": 73898,
+      "sha256": "a9cbbf468edb839c014e9b0c7a562950ca116093b74b8c8ea947a8054d78598a"
+    },
+    "timeseries/3120_neuralsync2.csv": {
+      "bytes": 73861,
+      "sha256": "5596ec00decb73daccdcc077e04534f26fca7fdc7909938015442285bfe5c3ff"
+    },
+    "timeseries/3120_neuralsync3.csv": {
+      "bytes": 73758,
+      "sha256": "26fc68f84505c220f06a9133461722d3fff693c9888550cef9a145e532c44184"
+    },
+    "transcripts/3120_transcript.json": {
+      "bytes": 728469,
+      "sha256": "2cd9c3bc19bf34a6184d03e3bab2b6e170ea9a103896d6cb7354797fe262bfe6"
+    },
+    "videos/3120.mp4": {
+      "bytes": 77695950,
+      "sha256": "86e8c0d84708ad1e0dd11d9036420460a7c8cc59d804e765af5270f34aaa40c9"
+    },
+    "videos/overview_video.gif.xmp": {
+      "bytes": 24287,
+      "sha256": "f597ae90d972c5bc3beca73cfb0c0ed306f5746721ebff1b871b80f4f5927caf"
+    }
+  },
+  "generated": "2026-09-08T02:25:38+00:00"
+}
